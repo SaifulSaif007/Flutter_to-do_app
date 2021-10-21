@@ -1,5 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:todo_app/models/task.dart';
+import 'package:todo_app/providers/task_provider.dart';
 import 'package:todo_app/screens/task_page.dart';
 import 'package:todo_app/widgets/task_card.dart';
 
@@ -13,6 +16,8 @@ class HomePage extends StatefulWidget {
 class HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
+    Provider.of<TaskProvider>(context).getTasks();
+
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -41,13 +46,13 @@ class HomePageState extends State<HomePage> {
                       fit: BoxFit.scaleDown,
                     )),
                   ),
-                  Expanded(
-                      child: ListView(
-                    children: const [
-                      taskCard(),
-                      taskCard(),
-                    ],
-                  ))
+                   Consumer<TaskProvider>(
+                      builder: (context, taskprovider, _) => ListView.builder(
+                          scrollDirection: Axis.vertical,
+                          shrinkWrap: true,
+                          itemCount: taskprovider.taskList.length,
+                          itemBuilder: (_, int index) => const taskCard()))
+
                 ],
               ))),
     );
