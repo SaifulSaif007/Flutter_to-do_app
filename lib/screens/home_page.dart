@@ -23,7 +23,7 @@ class HomePageState extends State<HomePage> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const TaskPage()),
+            MaterialPageRoute(builder: (context) => TaskPage(task: Task())),
           );
         },
         child: const Icon(Icons.add),
@@ -51,7 +51,17 @@ class HomePageState extends State<HomePage> {
                           scrollDirection: Axis.vertical,
                           shrinkWrap: true,
                           itemCount: taskprovider.taskList.length,
-                          itemBuilder: (_, int index) => const taskCard()))
+                          itemBuilder: (_, int index) => InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => TaskPage(
+                                          task: taskprovider.taskList[index])),
+                                );
+                              },
+                              child: taskCard(
+                                  task: taskprovider.taskList[index]))))
 
                 ],
               ))),

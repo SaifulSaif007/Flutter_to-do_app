@@ -27,7 +27,6 @@ class DatabaseHelper {
     Database _db = await database();
 
     List<Map<String, dynamic>> maps = await _db.query('task');
-    print("length : " + maps.toString());
     return List.generate(maps.length, (index) {
       return Task(
           id: maps[index]['id'],
