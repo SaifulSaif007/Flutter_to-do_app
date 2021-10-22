@@ -5,7 +5,7 @@ import 'package:todo_app/database/db_helper.dart';
 import 'package:todo_app/models/task.dart';
 
 class TaskPage extends StatefulWidget {
-  TaskPage({Key? key, required this.task}) : super(key: key);
+  const TaskPage({Key? key, required this.task}) : super(key: key);
 
   final Task task;
 
@@ -14,19 +14,34 @@ class TaskPage extends StatefulWidget {
 }
 
 class _TaskPageState extends State<TaskPage> {
+  DatabaseHelper databaseHelper = DatabaseHelper();
+
+  int taskId = 0;
   String taskTitle = "";
   String taskDescription = "";
 
+  late FocusNode titleFocus, descriptionFocus;
+
   @override
   void initState() {
-    print(widget.task.id);
-
     if (widget.task.id != null) {
+      taskId = widget.task.id ?? 0;
       taskTitle = widget.task.title ?? "No Title";
       taskDescription = widget.task.description ?? "No description";
     }
 
+    titleFocus = FocusNode();
+    descriptionFocus = FocusNode();
+
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    titleFocus.dispose();
+    descriptionFocus.dispose();
+
+    super.dispose();
   }
 
   @override
@@ -63,12 +78,24 @@ class _TaskPageState extends State<TaskPage> {
                     ),
                     Expanded(
                       child: TextField(
+                        maxLines: 1,
+                        focusNode: titleFocus,
                         onSubmitted: (value) async {
                           if (value != "") {
-                            DatabaseHelper databaseHelper = DatabaseHelper();
-                            Task _newTask = Task(title: value);
-                            await databaseHelper.insertTask(_newTask);
+                            if (widget.task.id == null) {
+                              Task _newTask = Task(title: value);
+                              taskId =
+                                  await databaseHelper.insertTask(_newTask);
+
+                              setState(() {
+                                taskTitle = value;
+                              });
+                            } else {
+                              databaseHelper.updateTask(taskId, value);
+                            }
                           }
+
+                          descriptionFocus.requestFocus();
                         },
                         controller: TextEditingController()..text = taskTitle,
                         decoration: const InputDecoration(
@@ -76,6 +103,7 @@ class _TaskPageState extends State<TaskPage> {
                             border: InputBorder.none),
                         style: const TextStyle(
                             fontSize: 22,
+                            overflow: TextOverflow.ellipsis,
                             fontWeight: FontWeight.bold,
                             color: Colors.blue),
                       ),
@@ -83,7 +111,8 @@ class _TaskPageState extends State<TaskPage> {
                   ],
                 ),
               ),
-               TextField(
+              TextField(
+                focusNode: descriptionFocus,
                 controller: TextEditingController()..text = taskDescription,
                 decoration: const InputDecoration(
                   hintText: "Enter Task Description",

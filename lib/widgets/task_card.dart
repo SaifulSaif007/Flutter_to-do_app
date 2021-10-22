@@ -3,17 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:todo_app/models/task.dart';
 
-class taskCard extends StatefulWidget {
+class TaskCard extends StatefulWidget {
   
-  const taskCard({Key? key, required this.task}) : super(key: key);
+  const TaskCard({Key? key, required this.task}) : super(key: key);
 
   final Task task;
 
   @override
-  _taskCardState createState() => _taskCardState();
+  TaskCardState createState() => TaskCardState();
 }
 
-class _taskCardState extends State<taskCard> {
+class TaskCardState extends State<TaskCard> {
   @override
   Widget build(BuildContext context) {
     return Card(

@@ -46,22 +46,25 @@ class HomePageState extends State<HomePage> {
                       fit: BoxFit.scaleDown,
                     )),
                   ),
-                   Consumer<TaskProvider>(
-                      builder: (context, taskprovider, _) => ListView.builder(
-                          scrollDirection: Axis.vertical,
-                          shrinkWrap: true,
-                          itemCount: taskprovider.taskList.length,
-                          itemBuilder: (_, int index) => InkWell(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => TaskPage(
-                                          task: taskprovider.taskList[index])),
-                                );
-                              },
-                              child: taskCard(
-                                  task: taskprovider.taskList[index]))))
+                   Expanded(
+                    child: Consumer<TaskProvider>(
+                        builder: (context, taskprovider, _) => ListView.builder(
+                            scrollDirection: Axis.vertical,
+                            shrinkWrap: true,
+                            itemCount: taskprovider.taskList.length,
+                            itemBuilder: (_, int index) => InkWell(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => TaskPage(
+                                            task:
+                                                taskprovider.taskList[index])),
+                                  );
+                                },
+                                child: TaskCard(
+                                    task: taskprovider.taskList[index])))),
+                  )
 
                 ],
               ))),
