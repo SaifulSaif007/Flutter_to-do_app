@@ -113,6 +113,13 @@ class _TaskPageState extends State<TaskPage> {
               ),
               TextField(
                 focusNode: descriptionFocus,
+                onSubmitted: (value) {
+                  if (value != "") {
+                    if (widget.task.id != null) {
+                      databaseHelper.updateTaskDesc(taskId, value);
+                    }
+                  }
+                },
                 controller: TextEditingController()..text = taskDescription,
                 decoration: const InputDecoration(
                   hintText: "Enter Task Description",

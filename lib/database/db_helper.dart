@@ -32,6 +32,13 @@ class DatabaseHelper {
     
   }
 
+    Future<void> updateTaskDesc(int id, String description) async {
+    Database _db = await database();
+
+    await _db.rawUpdate(
+        "update task set  description = '$description' where id = '$id' ");
+  }
+
   Future<List<Task>> getTasks() async {
     Database _db = await database();
 
