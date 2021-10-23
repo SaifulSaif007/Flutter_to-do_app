@@ -47,13 +47,6 @@ class _TaskPageState extends State<TaskPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          child: const Icon(Icons.delete),
-          backgroundColor: Colors.red,
-        ),
         body: SafeArea(
           child: Column(
             children: [
@@ -82,7 +75,7 @@ class _TaskPageState extends State<TaskPage> {
                         focusNode: titleFocus,
                         onSubmitted: (value) async {
                           if (value != "") {
-                            if (widget.task.id == null) {
+                            if (taskId == 0) {
                               Task _newTask = Task(title: value);
                               taskId =
                                   await databaseHelper.insertTask(_newTask);
@@ -115,8 +108,8 @@ class _TaskPageState extends State<TaskPage> {
                 focusNode: descriptionFocus,
                 onSubmitted: (value) {
                   if (value != "") {
-                    if (widget.task.id != null) {
-                      databaseHelper.updateTaskDesc(taskId, value);
+                    if (taskId != 0) {
+                  databaseHelper.updateTaskDesc(taskId, value.toString());
                     }
                   }
                 },

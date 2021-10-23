@@ -19,6 +19,7 @@ dependencies:
   sqflite:
   path:
   provider: ^6.0.1
+  flutter_slidable: ^0.6.0
 
 
 

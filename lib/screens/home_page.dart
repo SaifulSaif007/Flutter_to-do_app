@@ -1,9 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:todo_app/database/db_helper.dart';
 import 'package:todo_app/models/task.dart';
 import 'package:todo_app/providers/task_provider.dart';
 import 'package:todo_app/screens/task_page.dart';
+import 'package:todo_app/widgets/slideable_widget.dart';
 import 'package:todo_app/widgets/task_card.dart';
 
 class HomePage extends StatefulWidget {
@@ -14,6 +16,7 @@ class HomePage extends StatefulWidget {
 }
 
 class HomePageState extends State<HomePage> {
+  DatabaseHelper databaseHelper = DatabaseHelper();
   @override
   Widget build(BuildContext context) {
     Provider.of<TaskProvider>(context).getTasks();
@@ -46,11 +49,10 @@ class HomePageState extends State<HomePage> {
                       fit: BoxFit.scaleDown,
                     )),
                   ),
-                   Expanded(
+                  Expanded(
                     child: Consumer<TaskProvider>(
                         builder: (context, taskprovider, _) => ListView.builder(
                             scrollDirection: Axis.vertical,
-                            shrinkWrap: true,
                             itemCount: taskprovider.taskList.length,
                             itemBuilder: (_, int index) => InkWell(
                                 onTap: () {
@@ -62,12 +64,30 @@ class HomePageState extends State<HomePage> {
                                                 taskprovider.taskList[index])),
                                   );
                                 },
-                                child: TaskCard(
-                                    task: taskprovider.taskList[index])))),
+                                child: SlideableWidget(
+                                    onSlideAction: (action) => onSlideAction(
+                                        taskprovider.taskList[index]),
+                                    child: TaskCard(
+                                        task: taskprovider.taskList[index]))))),
                   )
-
                 ],
               ))),
     );
+  }
+
+  onSlideAction(Task task) {
+    if (task.id != null) {
+      databaseHelper.deleteTask(task.id ?? 0);
+    }
+
+    final snackBar = SnackBar(
+      content: const Text('Task deleted .'),
+      action: SnackBarAction(
+          label: 'Undo',
+          onPressed: () {
+            databaseHelper.insertTask(task);
+          }),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }
